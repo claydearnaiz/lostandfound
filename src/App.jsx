@@ -124,27 +124,32 @@ function AppContent() {
         <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-blue-100/30 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <Header 
-        isAdminView={isAdminView} 
-        setIsAdminView={setIsAdminView}
-        onLoginClick={() => setIsAuthOpen(true)}
-      />
-      
-      <FilterBar 
-        search={search}
-        setSearch={setSearch}
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        locationFilter={locationFilter}
-        setLocationFilter={setLocationFilter}
-        categoryFilter={categoryFilter}
-        setCategoryFilter={setCategoryFilter}
-        isAdmin={isAdminView}
-        onAddItem={handleAddItem}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        totalItems={filteredItems.length}
-      />
+      <div className="sticky top-0 z-40 bg-slate-50/80 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <Header 
+            isAdminView={isAdminView} 
+            setIsAdminView={setIsAdminView}
+            onLoginClick={() => setIsAuthOpen(true)}
+          />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <FilterBar 
+            search={search}
+            setSearch={setSearch}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
+            isAdmin={isAdminView}
+            onAddItem={handleAddItem}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            totalItems={filteredItems.length}
+          />
+        </div>
+      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Stats for Admin */}

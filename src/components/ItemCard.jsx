@@ -32,6 +32,7 @@ export const ItemCard = React.memo(({ item, onClick, isAdmin, onEdit, onDelete }
             alt={item.name}
             loading="lazy"
             onError={() => setImageError(true)}
+            // Removed opacity transition that hid image before load
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
