@@ -33,6 +33,8 @@ export const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData, title })
   const [previewUrl, setPreviewUrl] = useState('');
   const [submitLoading, setSubmitLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const [customCategory, setCustomCategory] = useState('');
+  const [customClaimLocation, setCustomClaimLocation] = useState('');
 
   useEffect(() => {
     if (initialData) {
@@ -55,6 +57,8 @@ export const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData, title })
       });
       setPreviewUrl('');
       setImageMode('upload');
+      setCustomCategory('');
+      setCustomClaimLocation('');
     }
   }, [initialData, isOpen]);
 
@@ -113,10 +117,16 @@ export const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData, title })
       alert('Please add an image');
       return;
     }
+    // apply custom fields if chosen
+    const payload = {
+      ...formData,
+      category: formData.category === 'Other' && customCategory ? customCategory : formData.category,
+      claimLocation: formData.claimLocation === 'Other' && customClaimLocation ? customClaimLocation : formData.claimLocation,
+    };
 
     setSubmitLoading(true);
     try {
-      await onSubmit(formData);
+      await onSubmit(payload);
     } finally {
       setSubmitLoading(false);
     }
@@ -254,16 +264,32 @@ export const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData, title })
 
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Category</label>
-            <input
-              list="categories"
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-              placeholder="e.g., Electronics"
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            />
-            <datalist id="categories">
-              {CATEGORIES.map(cat => <option key={cat} value={cat} />)}
-            </datalist>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {CATEGORIES.map(cat => {
+                const active = formData.category === cat;
+                return (
+                  <button
+                    type="button"
+                    key={cat}
+                    onClick={() => { setFormData({ ...formData, category: cat }); setCustomCategory(''); }}
+                    className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+                      active ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+            {(formData.category === 'Other') && (
+              <input
+                type="text"
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Enter custom category"
+                value={customCategory}
+                onChange={(e) => setCustomCategory(e.target.value)}
+              />
+            )}
           </div>
         </div>
 
@@ -287,13 +313,32 @@ export const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData, title })
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Claim Location *</label>
-            <select
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
-              value={formData.claimLocation}
-              onChange={(e) => setFormData({ ...formData, claimLocation: e.target.value })}
-            >
-              {CLAIM_LOCATIONS.map(loc => <option key={loc} value={loc}>{loc}</option>)}
-            </select>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {CLAIM_LOCATIONS.map(loc => {
+                const active = formData.claimLocation === loc;
+                return (
+                  <button
+                    type="button"
+                    key={loc}
+                    onClick={() => { setFormData({ ...formData, claimLocation: loc }); setCustomClaimLocation(''); }}
+                    className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
+                      active ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {loc}
+                  </button>
+                );
+              })}
+            </div>
+            {formData.claimLocation === 'Other' && (
+              <input
+                type="text"
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Enter custom claim location"
+                value={customClaimLocation}
+                onChange={(e) => setCustomClaimLocation(e.target.value)}
+              />
+            )}
           </div>
 
           <div>
