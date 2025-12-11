@@ -32,11 +32,11 @@ export const FilterBar = ({
         <div className="flex flex-col lg:flex-row gap-3 items-stretch">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
             <input 
               type="text" 
               placeholder="Search by name, description, or location..." 
-              className="input h-12 pl-11 pr-4"
+              className="input h-12 !pl-12 !pr-4"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

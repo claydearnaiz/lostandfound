@@ -114,13 +114,13 @@ export const AuthModal = ({ isOpen, onClose }) => {
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
               <input
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="John Doe"
-                className="input pl-11"
+                className="input !pl-12"
               />
             </div>
           </div>
@@ -129,14 +129,14 @@ export const AuthModal = ({ isOpen, onClose }) => {
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@adamson.edu.ph"
               required
-              className="input pl-11"
+              className="input !pl-12"
             />
           </div>
         </div>
@@ -144,7 +144,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
             <input
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -152,7 +152,7 @@ export const AuthModal = ({ isOpen, onClose }) => {
               placeholder="••••••••"
               required
               minLength={6}
-              className="input pl-11 pr-12"
+              className="input !pl-12 !pr-12"
             />
             <button
               type="button"

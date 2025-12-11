@@ -26,22 +26,24 @@ export const Modal = React.memo(({ isOpen, onClose, title, children, size = 'def
   };
 
   return (
+    // 1. THIS WRAPPER IS KEY FOR CENTERING: "flex items-center justify-center"
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop - faster animation */}
+      
+      {/* Backdrop (No Blur for Performance) */}
       <div 
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-150"
+        className="absolute inset-0 bg-slate-900/50 transition-opacity duration-150"
         onClick={onClose}
       />
       
-      {/* Modal - snappy transform animation */}
+      {/* Modal Card */}
       <div 
-        className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] overflow-hidden transform transition-all duration-150 ease-out`}
+        className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col overflow-hidden transform transition-all duration-150 ease-out will-change-transform`}
         style={{ animation: 'modalIn 150ms ease-out' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
             <h2 className="text-xl font-bold text-slate-900">{title}</h2>
             <button 
               onClick={onClose}
@@ -52,18 +54,18 @@ export const Modal = React.memo(({ isOpen, onClose, title, children, size = 'def
           </div>
         )}
         
-        {/* Close button when no title */}
+        {/* Close button (Floating) when no title */}
         {!title && (
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 p-2 text-slate-400 hover:text-slate-600 bg-white/90 backdrop-blur-sm hover:bg-slate-100 rounded-xl transition-colors"
+            className="absolute top-4 right-4 z-10 p-2 text-slate-400 hover:text-slate-600 bg-white/90 hover:bg-slate-100 rounded-xl transition-colors shadow-sm"
           >
             <X size={20} />
           </button>
         )}
         
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+        {/* Content Area - Auto scroll */}
+        <div className="p-6 overflow-y-auto">
           {children}
         </div>
       </div>

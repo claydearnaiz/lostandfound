@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { Calendar, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { LazyImage } from './LazyImage';
 
 export const ItemCard = React.memo(({ item, onClick, isAdmin, onEdit, onDelete }) => {
-  const [imageError, setImageError] = useState(false);
-
   const handleClick = useCallback(() => {
     onClick(item);
   }, [onClick, item]);
@@ -26,35 +25,24 @@ export const ItemCard = React.memo(({ item, onClick, isAdmin, onEdit, onDelete }
     >
       {/* Image */}
       <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
-        {!imageError ? (
-          <img 
-            src={item.image} 
-            alt={item.name}
-            loading="lazy"
-            onError={() => setImageError(true)}
-            // Removed opacity transition that hid image before load
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-300">
-            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </div>
-        )}
+        <LazyImage 
+          src={item.image} 
+          alt={item.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
         
         {/* Status Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 z-10">
           <span className={`badge ${
             item.status === 'Claimed' ? 'badge-success' : 'badge-warning'
-          }`}>
+          } shadow-sm`}>
             {item.status}
           </span>
         </div>
 
         {/* Admin Actions */}
         {isAdmin && (
-          <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+          <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
             <button 
               onClick={handleEdit}
               className="p-2 bg-white/95 text-blue-600 hover:bg-blue-50 rounded-lg shadow-md transition-colors"

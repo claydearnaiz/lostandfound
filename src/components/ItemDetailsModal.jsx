@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from './Modal';
 import { Calendar, MapPin, Box, Tag, Clock, Info } from 'lucide-react';
 import { format } from 'date-fns';
+import { LazyImage } from './LazyImage';
 
 export const ItemDetailsModal = React.memo(({ item, isOpen, onClose }) => {
   if (!item) return null;
@@ -11,13 +12,12 @@ export const ItemDetailsModal = React.memo(({ item, isOpen, onClose }) => {
       <div className="space-y-5">
         {/* Image - use will-change for GPU acceleration */}
         <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-100">
-          <img 
+          <LazyImage 
             src={item.image} 
             alt={item.name}
             className="w-full h-full object-cover"
-            loading="eager"
           />
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 z-10">
             <span className={`badge text-sm ${
               item.status === 'Claimed' ? 'badge-success' : 'badge-warning'
             }`}>

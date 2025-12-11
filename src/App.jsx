@@ -13,6 +13,23 @@ import { ItemGridSkeleton } from './components/Skeleton';
 import { itemService } from './services/itemService';
 import { Package, Search } from 'lucide-react';
 
+// 1. Helper function for smoother typing
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 function AppContent() {
   const { isAdmin } = useAuth();
   const toast = useToast();
@@ -24,6 +41,11 @@ function AppContent() {
   
   // Filters
   const [search, setSearch] = useState('');
+  
+  // 2. IMPLEMENTED DEBOUNCE HERE
+  // This waits 300ms after you stop typing to update the filter
+  const debouncedSearch = useDebounce(search, 300);
+
   const [statusFilter, setStatusFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -59,19 +81,23 @@ function AppContent() {
     }
   };
 
+  // 3. UPDATED FILTER LOGIC
   const filteredItems = useMemo(() => {
     return items.filter(item => {
+      // Use debouncedSearch instead of search
       const matchesSearch = 
-        (item.name || '').toLowerCase().includes(search.toLowerCase()) || 
-        (item.description || '').toLowerCase().includes(search.toLowerCase()) ||
-        (item.locationFound || '').toLowerCase().includes(search.toLowerCase());
+        (item.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()) || 
+        (item.description || '').toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        (item.locationFound || '').toLowerCase().includes(debouncedSearch.toLowerCase());
+      
       const matchesStatus = statusFilter === 'All' || item.status === statusFilter;
       const matchesLocation = locationFilter === 'All' || (item.locationFound || '').includes(locationFilter);
       const matchesCategory = !categoryFilter || (item.category || '').toLowerCase() === categoryFilter.toLowerCase();
       
       return matchesSearch && matchesStatus && matchesLocation && matchesCategory;
     });
-  }, [items, search, statusFilter, locationFilter, categoryFilter]);
+    // Updated dependency array to watch debouncedSearch
+  }, [items, debouncedSearch, statusFilter, locationFilter, categoryFilter]);
 
   const handleCardClick = (item) => {
     setSelectedItem(item);

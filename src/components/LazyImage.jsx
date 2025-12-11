@@ -1,45 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-const useIntersectionObserver = (options = {}) => {
-  const elementRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    if (!elementRef.current) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true);
-        observer.disconnect();
-      }
-    }, options);
-
-    observer.observe(elementRef.current);
-
-    return () => observer.disconnect();
-  }, [options]);
-
-  return [elementRef, isVisible];
-};
+import React, { useState, useEffect } from 'react';
 
 export const LazyImage = ({ src, alt, className = '', ...props }) => {
-  const [ref, isVisible] = useIntersectionObserver({ rootMargin: '100px' });
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const handleLoad = () => setIsLoaded(true);
-  const handleError = () => setHasError(true);
+  // Reset state when the image source changes (e.g. reused in modals)
+  useEffect(() => {
+    if (!src) {
+      setHasError(true);
+      setIsLoaded(true); // Stop skeleton if no source
+    } else {
+      setHasError(false);
+      setIsLoaded(false); // Start loading
+    }
+  }, [src]);
 
   return (
-    <div ref={ref} className={`relative overflow-hidden bg-slate-100 ${className}`}>
-      {isVisible && !hasError && (
+    <div className={`relative overflow-hidden bg-slate-100 ${className}`}>
+      
+      {/* Image with Native Lazy Loading */}
+      {src && !hasError && (
         <img
           src={src}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          onLoad={handleLoad}
-          onError={handleError}
+          alt={alt || 'Image'}
+          loading="lazy" 
+          onLoad={() => setIsLoaded(true)}
+          onError={() => {
+            setHasError(true);
+            setIsLoaded(true);
+          }}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
@@ -47,20 +36,25 @@ export const LazyImage = ({ src, alt, className = '', ...props }) => {
         />
       )}
       
-      {/* Skeleton / Placeholder */}
-      {!isLoaded && !hasError && (
+      {/* Loading Skeleton */}
+      {!isLoaded && !hasError && src && (
         <div className="absolute inset-0 bg-slate-200 animate-pulse" />
       )}
 
-      {/* Error State */}
+      {/* Error / No Image Placeholder */}
       {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 text-slate-400">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-slate-400 p-4 border border-slate-100">
+          <svg 
+            className="w-8 h-8 opacity-40 mb-1" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-40">No Image</span>
         </div>
       )}
     </div>
   );
 };
-
