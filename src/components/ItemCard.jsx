@@ -24,11 +24,11 @@ export const ItemCard = React.memo(({ item, onClick, isAdmin, onEdit, onDelete }
       onClick={handleClick}
     >
       {/* Image */}
-      <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
+      <div className="aspect-[4/3] relative overflow-hidden">
         <LazyImage 
           src={item.image} 
           alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0"
         />
         
         {/* Status Badge */}

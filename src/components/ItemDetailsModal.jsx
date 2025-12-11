@@ -10,12 +10,12 @@ export const ItemDetailsModal = React.memo(({ item, isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="">
       <div className="space-y-5">
-        {/* Image - use will-change for GPU acceleration */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-100">
+        {/* Image */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
           <LazyImage 
             src={item.image} 
             alt={item.name}
-            className="w-full h-full object-cover"
+            className="absolute inset-0"
           />
           <div className="absolute top-3 left-3 z-10">
             <span className={`badge text-sm ${

@@ -216,6 +216,7 @@ function AppContent() {
 
       {/* Modals */}
       <ItemDetailsModal 
+        key={selectedItem?.id || 'details'}
         item={selectedItem} 
         isOpen={isDetailsOpen} 
         onClose={() => setIsDetailsOpen(false)} 
